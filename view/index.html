@@ -4,11 +4,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Aicupa Weather Control Center</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 16px;
+      margin: 0;
+      background: transparent;
+      color: #e0e0e0;
+      overflow: hidden;
+    }
+
+    .weather-card {
+      background: #1e1e24;
+      border: 1px solid #2d2d3d;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 320px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #8c8c8c;
+      border-bottom: 1px solid #2d2d3d;
+      padding-bottom: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metric-box {
+      background: #141416;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 122, 204, 0.15);
+    }
+
+    .label {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .val {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .action-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .btn {
+      flex: 1;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .btn-refresh {
+      background: #007acc;
+      color: #fff;
+    }
+
+    .btn-refresh:hover {
+      background: #0062a3;
+    }
+
+    .btn-reset {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ccc;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-reset:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+  </style>
 </head>
 
 <body>
 
+  <div class="weather-card">
+    <div class="card-header">
+      <span>🛰️ Auto Weather Station</span>
+      <span id="panel-station" style="color: #007acc; font-weight: bold;">Locating...</span>
+    </div>
+
+    <div class="grid">
+      <div class="metric-box">
+        <div class="label">Location</div>
+        <div class="val" id="panel-city" style="color: #00a3ff;">--</div>
+      </div>
+      <div class="metric-box">
+        <div class="label">Condition</div>
+        <div class="val" id="panel-desc">--</div>
+      </div>
+      <div class="metric-box">
+        <div class="label">Temperature</div>
+        <div class="val" id="panel-temp">--°C</div>
+      </div>
+      <div class="metric-box">
+        <div class="label">Humidity</div>
+        <div class="val" id="panel-humidity">--%</div>
+      </div>
+    </div>
+
+    <div class="action-group">
+      <button class="btn btn-refresh" onclick="syncNow()">Sync Weather</button>
+      <button class="btn btn-reset" onclick="resetPosition()">Reset Position</button>
+    </div>
+  </div>
+
+  <script>
+    async function loadPanelData() {
+      try {
+        const response = await fetch('https://wttr.in/?format=j1');
+        if (!response.ok) return;
+        const data = await response.json();
+
+        // Location translation helper
+        const areaInfo = data.nearest_area && data.nearest_area[0];
+        let city = "Current Location";
+        if (areaInfo) {
+          city = areaInfo.areaName ? areaInfo.areaName[0].value : "Current Location";
+          const lower = city.toLowerCase();
+          if (lower.includes("hangzhou")) city = "Hangzhou";
+          else if (lower.includes("shanghai")) city = "Shanghai";
+          else if (lower.includes("beijing")) city = "Beijing";
+          else if (lower.includes("shenzhen")) city = "Shenzhen";
+        }
+
+        const current = data.current_condition[0];
+        document.getElementById('panel-city').innerText = city;
+        document.getElementById('panel-temp').innerText = `${current.temp_C}°C`;
+        // Prioritize English description for internationalization alignment
+        document.getElementById('panel-desc').innerText = current.weatherDesc ? current.weatherDesc[0].value : "Unknown";
+        document.getElementById('panel-humidity').innerText = `${current.humidity}%`;
+        document.getElementById('panel-station').innerText = "ONLINE";
+      } catch (e) {
+        document.getElementById('panel-desc').innerText = "Sync Failed";
+        document.getElementById('panel-station').innerText = "OFFLINE";
+      }
+    }
+
+    function syncNow() {
+      document.getElementById('panel-station').innerText = "SYNCING...";
+      loadPanelData().then(() => {
+        window.parent.postMessage({ type: 'plugin-call', method: 'notifyWeatherRefresh' }, '*');
+      });
+    }
+
+    // 🎯 清理缓存坐标并广播，通知主注入脚本重置气泡样式
+    function resetPosition() {
+      localStorage.removeItem("aicupa_weather_pos");
+      window.parent.postMessage({ type: 'plugin-call', method: 'resetWeatherPosition' }, '*');
+    }
+
+    // First load
+    loadPanelData();
+  </script>
 </body>
 
 </html>

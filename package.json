@@ -1,15 +1,9 @@
 {
-  "name": "@aicupa/plugin-template",
+  "name": "@aicupa/plugin-weather",
   "version": "1.0.0",
-  "description": "aicupa plugin template",
+  "description": "Aicupa 自动定位天气插件",
   "main": "./service",
   "view": "./view",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/",
-    "access": "public"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@aicupa/api": "^1.0.4"
-  }
+  "viewjs": "./inject.js",
+  "dependencies": {}
 }
