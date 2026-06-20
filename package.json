@@ -1,6 +1,6 @@
 {
   "name": "@aicupa/plugin-weather",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Show weather in todolist.",
   "main": "./service",
   "view": "./view",
