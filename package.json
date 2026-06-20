@@ -1,7 +1,7 @@
 {
   "name": "@aicupa/plugin-weather",
   "version": "1.0.2",
-  "description": "Aicupa 自动定位天气插件",
+  "description": "Show weather in todolist.",
   "main": "./service",
   "view": "./view",
   "viewjs": "./inject.js",
