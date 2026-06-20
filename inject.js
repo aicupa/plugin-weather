@@ -201,9 +201,9 @@
       <div class="weather-detail-panel">
         <div class="detail-item font-location">📍 ${info.city}</div>
         <div class="detail-split"></div>
-        <div class="detail-item">状况: ${info.desc}</div>
-        <div class="detail-item">范围: ${info.range}</div>
-        <div class="detail-item">湿度: ${info.humidity}%</div>
+        <div class="detail-item">Cond: ${info.desc}</div>
+        <div class="detail-item">Temp: ${info.temp}°C</div>
+        <div class="detail-item">Humi: ${info.humidity}%</div>
       </div>
     `;
   }
