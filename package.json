@@ -1,0 +1,15 @@
+{
+  "name": "@aicupa/plugin-template",
+  "version": "1.0.0",
+  "description": "aicupa plugin template",
+  "main": "./service",
+  "view": "./view",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@aicupa/api": "^1.0.4"
+  }
+}

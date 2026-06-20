@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "todolist-knowledge": {
+      "source": "aicupa/skills",
+      "sourceType": "github",
+      "skillPath": "skills/todolist-knowledge/SKILL.md",
+      "computedHash": "7fc7f8b317a2b07d04837479b398d5f95deb18bb8712a81328c51201a89fa9d7"
+    }
+  }
+}
