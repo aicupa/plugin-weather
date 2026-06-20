@@ -1,6 +1,6 @@
 {
   "name": "@aicupa/plugin-weather",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Aicupa 自动定位天气插件",
   "main": "./service",
   "view": "./view",
